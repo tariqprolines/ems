@@ -11,6 +11,7 @@ let employeeSchema = new Schema({
     address:{
         type: String
     },
+    
 },{ timestamps: true },{
     collation: 'employees'
 })

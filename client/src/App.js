@@ -11,7 +11,6 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Welcome from './components/Welcome';
 
-
 function App() {
   return (
       <div>

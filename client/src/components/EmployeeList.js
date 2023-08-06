@@ -3,24 +3,39 @@ import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 
 function EmployeeList() {
-  const navigate = useNavigate()
+    const navigate = useNavigate()
     const [employees, setEmployees] = useState([])
+    const token = localStorage.getItem('jwt')
+
+    const auth = token;
+      useEffect(() => {
+       if(auth == null){
+         navigate('/')
+       }
+      }, [auth])
+
+    const headers ={
+      "x-access-token": token
+    }
+    // axios.defaults.withCredentials = true;
     useEffect(() => {
-      axios.get('http://localhost:5000/employees',{withCredentials:true})
-      .then(({data}) => { console.log(data)
+      axios.get('http://localhost:5000/employees',{
+        headers:headers
+      })
+      .then(({data}) => { 
         setEmployees(data)
       })
-      .catch((error) => { console.log('no');
-        console.log(error.response)
-        if(error.response && error.response.status === 401){
-          navigate('/login')
-          // window.location.reload()
+      .catch((error) => {
+        if(error.response && (error.response.status === 401 || error.response.status === 302)){
+          navigate('/')
         }
       })
     }, [])
     
     const deleteEmployee = (id) =>{
-        axios.delete('http://localhost:5000/employees/delete-employee/'+id)
+        axios.delete('http://localhost:5000/employees/delete-employee/'+id,{
+          headers
+        })
         .then(res => {
           if(res.status === 200){
             alert('Employee Deleted Successfully.')

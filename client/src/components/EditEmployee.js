@@ -12,14 +12,28 @@ function EditEmployee() {
     address: ''
   })
 
+  const auth = localStorage.getItem('jwt');
+
+   useEffect(() => {
+    if(auth == null){
+      navigate('/')
+    }
+   }, [auth])
+
   const handleInput = (e) => {
     setinputValue({...inputValue,[e.target.name]:e.target.value})
   }
 
+  const token = localStorage.getItem('jwt')
+    const headers ={
+      "x-access-token": token
+    }
   // Load employee record
 
   useEffect(() => {
-    axios.get('http://localhost:5000/employees/update-employee/'+param.id)
+    axios.get('http://localhost:5000/employees/update-employee/'+param.id,{
+      headers:headers
+    })
     .then((res) => {
       setinputValue(res.data)
     })
@@ -32,7 +46,9 @@ function EditEmployee() {
       email:inputValue.email,
       address:inputValue.address
     }
-    axios.put(`http://localhost:5000/employees/update-employee/${param.id}`,data)
+    axios.put(`http://localhost:5000/employees/update-employee/${param.id}`,data,{
+      headers
+    })
     .then(res => {
       if(res.status === 200){
         console.log('Updated Employee Record Successfully.')

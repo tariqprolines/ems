@@ -28,7 +28,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser())
 
-app.use(cors({ credentials: true, }));
+app.use(cors({
+   origin: ["http://localhost:3000"],
+   methods:["*"],
+   credentials: true,
+   }));
 
 
 //Employee Routes
@@ -39,6 +43,9 @@ app.use('/employees', employeeRoute)
 app.use('/auth', authRoute)
 
 // Contact Us
+app.get('/contact',(req,res) => {
+  res.send('contact page');
+})
 app.post('/contact',(req, res, next) => {
   contactSchema.create(req.body, (error, data) => {
     console.log(data)

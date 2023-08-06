@@ -1,8 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+ const Menu = () =>{
+  const auth = localStorage.getItem('jwt');
+  const user = localStorage.getItem('user')
+  const navigate = useNavigate()
+  const logout = () => {
+    localStorage.clear()
+    navigate('/')
+  }
 
-function Menu() {
   return (
   <nav className="navbar navbar-expand-lg bg-body-tertiary bg-dark" data-bs-theme="dark">
   <div className="container-fluid">
@@ -13,27 +20,35 @@ function Menu() {
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
-         <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+         <Link className="nav-link active" aria-current="page" to="/about">About</Link>
         </li>
+        {auth &&
+        <>
         <li className="nav-item">
-         <Link className="nav-link" to="/about">About</Link>
-        </li>
-        <li className="nav-item">
-         <Link className="nav-link" to="/create-employee">Create Employee</Link>
-        </li>
+        <Link className="nav-link" to="/employee-list">Employees List</Link>
+       </li>
+       <li className="nav-item">
+        <Link className="nav-link" to="/create-employee">Create Employee</Link>
+       </li>
+        </>
+        }
+        
         <li className="nav-item">
          <Link className="nav-link" to="/contact-us">Contact Us</Link>
         </li>
       </ul>
       <span className='d-flex'>
-        <Link className='me-2 text-white text-decoration-none' to="/register">Register</Link> / 
-        <Link className='text-white text-decoration-none' to="/login">Login</Link> / 
-        <Link className='text-white text-decoration-none' to="/logout">Logout</Link>
+        { auth?
+          <>
+          <span className='text-white text-decoration-none mx-4'>Welcome to ({user})</span>
+          <Link className='text-white text-decoration-none' onClick={logout} to="/">Logout</Link>
+          </>
+          :<>
+          <Link className='me-2 text-white text-decoration-none' to="/register">Register</Link> / 
+          <Link className='text-white text-decoration-none' to="/">Login</Link> 
+          </>
+        }
       </span>
-      {/* <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-        <button className="btn btn-outline-success" type="submit">Search</button>
-      </form> */}
     </div>
   </div>
 </nav>

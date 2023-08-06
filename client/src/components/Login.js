@@ -1,9 +1,15 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 
 const Login = () => {
     const navigate = useNavigate()
+    const auth = localStorage.getItem('jwt');
+      useEffect(() => {
+       if(auth !== null){
+         navigate('/employee-list')
+       }
+      }, [auth])
     const [inputValue, setInputValue] = useState({
         email:'',
         password:''
@@ -21,7 +27,8 @@ const Login = () => {
          axios.post('http://localhost:5000/auth/login',data)
         .then((res) => { 
           localStorage.setItem('jwt',res.data.token)
-          navigate('/welcome')
+          localStorage.setItem('user', res.data.user.name)
+          navigate('/employee-list')
         })
         .catch((err) => {
            let statusCode = err.response.data.status

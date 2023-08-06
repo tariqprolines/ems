@@ -12,19 +12,27 @@ const isAuth = require('../middleware/auth')
 
 //Create Employee
 
-router.post('/create-employee',(req, res, next) => {
-    employeeSchema.create(req.body, (error, data) => {
-      if (error) {
-        return next(error)
-      } else {
-        res.json(data)
-      }
-    })
+router.post('/create-employee',isAuth,async(req, res, next) => {
+    const email = req.body.email
+    console.log(email)
+    const employee= await employeeSchema.findOne({email:email})
+    console.log(employee);
+    if(employee){
+      res.status(403).json({message:"User Already Exist."})
+    }else{
+      employeeSchema.create(req.body, (error, data) => {
+        if (error) {
+          return next(error)
+        } else {
+          res.json(data)
+        }
+      })
+    }
   });
 
 // Read Employees
 
-router.get('/', isAuth ,async(req, res) => {
+router.get('/',isAuth,async(req, res) => {
     try {
       let data = await employeeSchema.find().sort({_id:-1})
       res.json({
@@ -37,7 +45,7 @@ router.get('/', isAuth ,async(req, res) => {
 })
 
 //Edit Employee
-router.get('/update-employee/:id', (req,res, next) => {
+router.get('/update-employee/:id',isAuth, (req,res, next) => {
   employeeSchema.findById(
     req.params.id,(error, data) => {
       if(error){
@@ -51,7 +59,7 @@ router.get('/update-employee/:id', (req,res, next) => {
 })
 
 // Update Employee
-router.put('/update-employee/:id',(req,res,next) => {
+router.put('/update-employee/:id',isAuth,(req,res,next) => {
   employeeSchema.findByIdAndUpdate(
     req.params.id, 
     {$set:req.body},
@@ -67,7 +75,7 @@ router.put('/update-employee/:id',(req,res,next) => {
 })
 
 //Delete Employee
-router.delete('/delete-employee/:id',(req,res,next) => {
+router.delete('/delete-employee/:id',isAuth,(req,res,next) => {
   employeeSchema.findByIdAndRemove(
     req.params.id,(error, data) => {
       if(error){

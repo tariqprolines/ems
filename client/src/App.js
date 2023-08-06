@@ -10,23 +10,21 @@ import Contact from './components/Contact';
 import Register from './components/Register';
 import Login from './components/Login';
 import Welcome from './components/Welcome';
-import Logout from './components/Logout';
+
 
 function App() {
   return (
       <div>
         <Menu />
           <Routes>
-              <Route path="/" element={<EmployeeList />} />
+              <Route path="/" element={<Login />} />
               <Route path="/create-employee" element={<CreateEmployee />} />
               <Route path="/edit-employee/:id" element ={<EditEmployee />} />
               <Route path='/about' element={<About />} />
               <Route path='/contact-us' element={<Contact />} />
               <Route path='/register' element={<Register />} />
-              <Route path='/login' element={<Login />} />
-              <Route path='/logout' element={<Logout />} />
+              <Route path='/employee-list' element={<EmployeeList />} />
               <Route path='/welcome' element={<Welcome/>} />
-
           </Routes>
     </div>
   );

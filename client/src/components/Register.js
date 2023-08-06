@@ -25,7 +25,8 @@ const Register = () => {
         }
         axios.post('http://localhost:5000/auth/register',data)
         .then((res) => { 
-          localStorage.setItem('jwt',JSON.stringify(res.data.token))
+          localStorage.setItem('jwt',res.data.token)
+          localStorage.setItem('user', res.data.user.name)
           alert(`${data.name} registered successfully`)  
           navigate('/')
         })

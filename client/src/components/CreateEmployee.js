@@ -1,15 +1,23 @@
 import axios from 'axios'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function CreateEmployee() {
-  const navigate = useNavigate();
+const CreateEmployee = () => {
+  const navigate = useNavigate()
+  // Authentication
+  const auth = localStorage.getItem('jwt');
+    useEffect(() => {
+     if(auth == null){
+       navigate('/')
+     }
+    }, [auth])
+
   const [inputValue, setinputValue] = useState({
     name:'',
     email:'',
     address:'',
   })
-
+   
   const handleInput = (e) =>{
     setinputValue({...inputValue,[e.target.name]:e.target.value})
   }
@@ -21,11 +29,19 @@ function CreateEmployee() {
       email:inputValue.email,
       address: inputValue.address
     }
-    axios.post('http://localhost:5000/employees/create-employee',data)
-    .then((res) => { console.log('Employee created successfully.')  })
-    .catch((err) => {console.log(err)})
-
-    navigate('/')
+    const token = localStorage.getItem('jwt')
+    const headers ={
+      "x-access-token": token
+    }
+    axios.post('http://localhost:5000/employees/create-employee',data,{
+      headers:headers
+    })
+    .then((res) => { navigate('/employee-list') })
+    .catch((error) => { 
+      if(error.response && error.response.status === 401){
+        navigate('/')
+      }
+    })
   }
   return (
     <div className='container'>

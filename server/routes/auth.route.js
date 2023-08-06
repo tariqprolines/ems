@@ -31,8 +31,7 @@ router.post('/register',async(req,res) => {
             // res.cookie('jwt',token,{expires:new Date(Date.now()+100000),httpOnly:true})
 
             const savedUser = await user.save()
-            
-            res.send({ id: savedUser._id, token: token});
+            res.send({ id: savedUser._id, token: token,user: savedUser});
         }
         else{
             res.send('Password not match.')
@@ -45,12 +44,6 @@ router.post('/register',async(req,res) => {
 // Login
 
 router.post('/login', async(req,res) => {
-    res.header('Content-Type', 'application/json;charset=UTF-8')
-    res.header('Access-Control-Allow-Credentials', true)
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept'
-    )
     try{
         const email = req.body.email
         const password = req.body.password
@@ -60,13 +53,9 @@ router.post('/login', async(req,res) => {
 
         if(isMatch){
   
-            const token = await user.generateAuthToken(); 
-
-            // console.log(token);
-            
+            const token = await user.generateAuthToken();             
             // res.cookie('jwt', token)
-
-            res.status(200).json({status:200, token: token})
+            res.status(200).json({status:200, token: token, user:user})
         }
         else{
             res.status(400).json({status:400})
@@ -76,10 +65,5 @@ router.post('/login', async(req,res) => {
         res.status(401).json({status:401})
     }
 })
-
-router.get('/setcookie', (req, res) => {
-    res.cookie(`Cookie token name`,`encrypted cookie string Value`);
-    res.send('Cookie have been saved successfully');
-});
 
 module.exports = router
